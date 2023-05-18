@@ -2,8 +2,8 @@
 # nm -D ./libhello.so
 
 files = {
-    "N1vsX/Heterogeneity Analysis static.cpp": 'n1vsx_static',
-    "N1vsX/Heterogeneity Analysis dynamic.cpp": 'n1vsx_dynamic',
+    "src/N1vsX/Heterogeneity Analysis static.cpp": 'n1vsx_static',
+    "src/N1vsX/Heterogeneity Analysis dynamic.cpp": 'n1vsx_dynamic',
 }
 
 import os
