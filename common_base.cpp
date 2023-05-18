@@ -36,6 +36,7 @@ vector<int> sample(const int& lower, const int& upper, const int& no_of_samples,
 int main_toTest2()
 {
 	topology_base a;
+	return 0;
 }
 
 

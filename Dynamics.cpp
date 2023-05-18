@@ -40,6 +40,7 @@ int maindy()
 
     cout<<net.msdx()<< endl;
     cout<< net.avgx();
+    return 0;
 }
 
 

@@ -1,9 +1,16 @@
+#include "./../Small_World.cpp"
 #include "./../Dynamics.cpp"
 #include <fstream>
 #include <sstream>
 
-int progress =0;
-
+namespace parameter{
+    const vector<int> n1_limits_in_percentage { 0, 60, 1 };  /// range
+    constexpr double et = 20;
+    constexpr double dt = 0.01;
+    constexpr int repetitions = 1 ;
+    constexpr int lp = 10;
+    constexpr int link_period = 10  ;
+}
 
 class HeterogeneityAnalysis : private Dynamics
 {public:
@@ -12,7 +19,7 @@ class HeterogeneityAnalysis : private Dynamics
     :Dynamics(n,k) {}
 
     ///function to write n1, aoic, stdev to the file f
-    void n1vsX(ofstream& f, double p,  double b, double c);
+    void n1vsX(ostream& f, double p,  double b, double c);
 
 private:
     //function to evolve dynamic network and return the average value after lp points
@@ -21,30 +28,14 @@ private:
 
 
 
-int main()
+string result; // can be called from python
+extern "C" char* dynamic_sw(int n, int k, double p, double b, double c)
 {using namespace parameter;
-    cout<< " Total iterations = "<<( nRange.size()*kRange.size()*  repetitions*
-                                     pRange.size()*bRange.size()*cRange.size() )
-                                     << endl ;
-    for(int n : nRange)
-    for(int k : kRange)
-    {
-        HeterogeneityAnalysis analyser(n, k);
-
-        for(double p : pRange)
-        for(double b : bRange)
-        for(double c : cRange)
-        {
-            ostringstream parameters;
-            parameters <<"dynamic"   <<"_c="<<c    <<"_k="<<k
-					   <<"_n="<<n    <<"_b="<<b    <<"_p="<<p ;
-            ofstream f( parameters.str()+".txt" ) ;
-            f<<"# "<<parameters.str()<< endl;
-            f<<"#"<<endl;
-            analyser.n1vsX(f,p,b,c);
-            f.close();
-        }
-    }
+    HeterogeneityAnalysis analyser(n, k);
+    ostringstream f;
+    analyser.n1vsX(f,p,b,c);
+    result = f.str();
+    return &result[0];
 }
 
 
@@ -54,10 +45,10 @@ int main()
 //------------implementation of class functions----------------
 
 ///function to write n1, aoic, stdev to the file f
-void HeterogeneityAnalysis::n1vsX(ofstream& f,double p,  double b, double c)
+void HeterogeneityAnalysis::n1vsX(ostream& f,double p,  double b, double c)
 {using parameter::repetitions;
 using parameter::n1_limits_in_percentage;
-    f<<"# N1"<<"\t"   <<"aoic"<<"\t"   <<"stdev"<<endl;
+    f<<"N1,aoic,stdev"<<endl;
     double avgValue, stdev;
 
     int n1begin = round( n1_limits_in_percentage[0]/100.0 * x.size() );
@@ -78,10 +69,8 @@ using parameter::n1_limits_in_percentage;
         aoic /= repetitions;
         aoic2 /= repetitions;
         stdev = sqrt( abs(aoic2 - aoic*aoic) );
-        f<<n1<<"\t"  <<aoic<<"\t"  <<stdev<<endl;
+        f<<n1<<","  <<aoic<<","  <<stdev<<endl;
     }
-    progress+= repetitions;
-    cout<< "\r progress = "<<progress<< "  "<<flush ;
 }
 
 
