@@ -1,4 +1,4 @@
-#g++ -shared -o outfile.so -fPIC infile.cpp
+# g++ -shared -o outfile.so -fPIC infile.cpp
 # nm -D ./libhello.so
 
 files = {
