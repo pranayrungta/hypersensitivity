@@ -35,6 +35,24 @@ class spacetime : private Dynamics
 				f<<i*dt<<","  <<j<<","  <<x[j]<<endl;
 		}
 	}
+
+    void meanfield(ostream& f, int n1, double p,  double b,double c)
+	{
+        const double et = 40;
+        const double dt = 0.01;
+
+		links.evolve_links(p);
+		initialize_fixed_ic();
+		apply_heterogeneity(n1);
+
+		f<<"time,Avg_value"<<endl;
+		int limit= (int) (et/dt);
+		for(int i=1; i<=limit; i++)
+		{
+			evolveNodes(dt,b,c);
+			f<<i*dt<<"," <<avgx()<<endl;
+		}
+	}
 };
 
 
@@ -47,5 +65,15 @@ extern "C" char* static_sw(int n, int k, int n1, double p, double b, double c)
     result = f.str();
     return &result[0];
 }
+
+extern "C" char* static_sw_mean(int n, int k, int n1, double p, double b, double c)
+{
+    spacetime analyser(n, k);
+    ostringstream f;
+    analyser.meanfield(f,n1,p,b,c);
+    result = f.str();
+    return &result[0];
+}
+
 
 //int main(){return 0;}
