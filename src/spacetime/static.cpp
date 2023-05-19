@@ -48,4 +48,4 @@ extern "C" char* static_sw(int n, int k, int n1, double p, double b, double c)
     return &result[0];
 }
 
-int main(){return 0;}
+//int main(){return 0;}
