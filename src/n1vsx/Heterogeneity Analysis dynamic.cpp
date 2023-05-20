@@ -2,6 +2,7 @@
 #include "./../Dynamics.cpp"
 #include <fstream>
 #include <sstream>
+#include <cstring>
 
 namespace parameter{
     const vector<int> n1_limits_in_percentage { 0, 60, 1 };  /// range
@@ -28,17 +29,28 @@ private:
 
 
 
-string result; // can be called from python
+//char* alloc_memory(void) {
+//    char* str = strdup("Hello World");
+//    printf("Memory allocated...\n");
+//    return str;
+//}
+
+extern "C" void free_memory(char* ptr)
+{ free(ptr); }
+
+//string result; // can be called from python
 extern "C" char* dynamic_sw(int n, int k, double p, double b, double c)
 {using namespace parameter;
     HeterogeneityAnalysis analyser(n, k);
     ostringstream f;
     analyser.n1vsX(f,p,b,c);
-    result = f.str();
-    return &result[0];
+
+    string s = f.str();
+    char* ch = strdup(&s[0]);
+    return ch;
 }
 
-
+int main(){return 0;}
 
 
 
